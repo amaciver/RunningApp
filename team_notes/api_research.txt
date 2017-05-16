@@ -1,0 +1,24 @@
+IMPORTANT NOTE UP FRONT - the “Metadata API” is now deprecated; from here forth, we’re talking about a single API known as the “Web API” which contains all the functionality of the old Metadata API which will soon be removed
+
+Executive Summary:
+Spotify’s API endpoints are broken up between public (anyone on the web) and private (user auth required)1.  Additionally, requests may be both limited (a specific code lets you know you’ve exceeded) and metered (based on your own app status or user privilege).
+Since our concept involves accessing a user’s songs, we will need to get the user’s authorization early on (like, step #1)2...and within some “scope”3 of permissions necessary.  This will provide our app an access token for subsequent requests to the Spotify API.  We’ll need to refresh this token periodically so the user doesn’t have to keep logging in.
+As to the question of making our app a “Login With Spotify” app, it seems very doable.  Several API wrappers, code samples, and OAuth2 integrations exist for different app configurations4.  Absent a more elegant solution, we could create an “unprotected” shadow user account on our servers for user data particular to our app.  The user ID could be the unique ID of the Spotify user object for that user.  No separate password for us to track, but we could still protect these routes (thus any user info there) by first establishing there’s an active Spotify access token for that user.
+As previously pointed out, there’s a number of attributes in the track object5 (and associated audio features object) that will serve our purposes.  These include:
+Tempo (<-- BPM)
+Danceability
+Duration
+Unique ID
+Popularity (real time variable off Spotify algorithm)
+Energy (0.0 to 1.0 measure of intensity and activity)
+Loudness
+Valence (0.0 to 1.0 measure of “positiveness”)
+EQUALS EQUALS … room for creativity on our end as we write the algorithm to decide next track
+Additionally, there’s a detailed audio analysis endpoint for each track that returns a huge JSON object with all of the above and then some (GET https://api.spotify.com/v1/audio-analysis/{id}).
+
+
+1: https://developer.spotify.com/web-api/endpoint-reference/
+2: https://developer.spotify.com/web-api/authorization-guide/
+3: https://developer.spotify.com/web-api/using-scopes
+4: https://developer.spotify.com/web-api/code-examples//
+5: https://developer.spotify.com/web-api/object-model/
